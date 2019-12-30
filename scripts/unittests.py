@@ -10,14 +10,15 @@ import unittest
 
 from chassis_wheel_calculator import ChassisWheel, ChassisWheelCalculator
 
-max_angle = 2 * math.pi
+MAX_ANGLE = 2 * math.pi
 
-sawppy_wheelbase_front = 0.285
-sawppy_wheelbase_mid = 0
-sawppy_wheelbase_rear = -0.257
-sawppy_track_front = 0.23
-sawppy_track_mid = 0.26
-sawppy_track_rear = 0.23
+# Sawppy chassis geometry in meters
+SAWPPY_WHEELBASE_FRONT = 0.285
+SAWPPY_WHEELBASE_MID = 0
+SAWPPY_WHEELBASE_REAR = -0.257
+SAWPPY_TRACK_FRONT = 0.23
+SAWPPY_TRACK_MID = 0.26
+SAWPPY_TRACK_REAR = 0.23
 
 
 class TestWheelCalculator(unittest.TestCase):
@@ -26,36 +27,36 @@ class TestWheelCalculator(unittest.TestCase):
     def setUp(self):
         """Configure test chassis with default Sawppy dimensions."""
         self.log = logging.getLogger('TestLog')
-        self.test_chassis = []
 
+        self.test_chassis = []
         self.test_chassis.append(
             ChassisWheel(
-                'front_left',  sawppy_wheelbase_front,  sawppy_track_front,
+                'front_left',  SAWPPY_WHEELBASE_FRONT,  SAWPPY_TRACK_FRONT,
                 ),
             )
         self.test_chassis.append(
             ChassisWheel(
-                'front_right', sawppy_wheelbase_front, -sawppy_track_front,
+                'front_right', SAWPPY_WHEELBASE_FRONT, -SAWPPY_TRACK_FRONT,
                 ),
             )
         self.test_chassis.append(
             ChassisWheel(
-                'mid_left',      sawppy_wheelbase_mid,  sawppy_track_mid,
+                'mid_left',      SAWPPY_WHEELBASE_MID,  SAWPPY_TRACK_MID,
                 ),
             )
         self.test_chassis.append(
             ChassisWheel(
-                'mid_right',     sawppy_wheelbase_mid, -sawppy_track_mid,
+                'mid_right',     SAWPPY_WHEELBASE_MID, -SAWPPY_TRACK_MID,
                 ),
             )
         self.test_chassis.append(
             ChassisWheel(
-                'rear_left',    sawppy_wheelbase_rear,  sawppy_track_rear,
+                'rear_left',    SAWPPY_WHEELBASE_REAR,  SAWPPY_TRACK_REAR,
                 ),
             )
         self.test_chassis.append(
             ChassisWheel(
-                'rear_right',   sawppy_wheelbase_rear, -sawppy_track_rear,
+                'rear_right',   SAWPPY_WHEELBASE_REAR, -SAWPPY_TRACK_REAR,
                 ),
             )
 
@@ -91,8 +92,8 @@ class TestWheelCalculator(unittest.TestCase):
                 )
             test_names_encountered.append(wheel.name)
             test_names_checklist.remove(wheel.name)
-            self.assertGreaterEqual(wheel.angle, -max_angle)
-            self.assertLessEqual(wheel.angle, max_angle)
+            self.assertGreaterEqual(wheel.angle, -MAX_ANGLE)
+            self.assertLessEqual(wheel.angle, MAX_ANGLE)
 
         self.assertEqual(
             len(test_names_checklist),
