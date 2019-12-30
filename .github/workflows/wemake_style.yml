@@ -1,4 +1,4 @@
-name: CI
+name: wemake_style
 
 on: [push]
 
