@@ -1,56 +1,77 @@
 #!/usr/bin/python3
-import sys
+# -*- coding: utf-8 -*-
+
+"""Chassis wheel calculator and supporting classes."""
 
 
-class chassis_wheel:
-    """Information needed to calculate angle and speed for a specific wheel
+class ChassisWheel(object):
+    """Information needed to calculate angle and speed for a specific wheel.
+
     Axis orientation conforms to REP103. (+X is forward, +Y is left, +Z is up)
-    https://www.ros.org/reps/rep-0103.html"""
+    https://www.ros.org/reps/rep-0103.html
+    """
 
-    def __init__(self, name, x, y):
+    def __init__(self, name, offset_front, offset_left):
+        """Initialize a chassis wheel instance with X & Y relative to center.
+
+        Args:
+            name : name for this wheel
+            offset_front : front/back relative to center, positive forward.
+            offset_left : left/right relative to center, positive left.
+        """
         self.name = name
-        self.x = x
-        self.y = y
+        self.offset_front = offset_front
+        self.offset_left = offset_left
 
 
-class chassis_wheel_angle_speed:
-    """Results of chassis geometry calculation for the named wheel"""
+class ChassisWheelAngleSpeed(object):
+    """Results of chassis geometry calculation for the named wheel."""
 
     def __init__(self, name, angle, velocity):
+        """Initialize a chassis wheel with desired angle and velocity.
+
+        Args:
+            name : name for this wheel
+            angle : steering angle for this wheel in radians.
+            velocity : rolling velocity for this wheel in meters/second
+        """
         self.name = name
         self.angle = angle
         self.velocity = velocity
 
 
-class chassis_wheel_calculator:
-    """Given a overall desired motion for a robot chassis, calculate the
+class ChassisWheelCalculator(object):
+    """Chassis wheel angle and velocity calculator.
+
+    Given a overall desired motion for a robot chassis, calculate the
     individual angle and velocity required for each wheel on board the robot
     chassis.
 
     Chassis configuration is given as a list of chassis_wheeel class, one
-    for each wheel."""
+    for each wheel.
+    """
 
     def __init__(self, chassis):
-        """Initializes an instance of chassis wheel calculator class.
-        chassis -- a list of chassis_wheel instances, one for each wheel
-                aboard the robot."""
+        """Initialize an instance of chassis wheel calculator class.
+
+        Args:
+            chassis : a list of ChassisWheel instances
+        """
         self.chassis = chassis
 
     def calculate(self, angular=0, linear=0):
-        """Given a desired angular and linear velocity for robot chassis
-        center, calculate necessary angle and speed for each wheel on board.
-        angular -- desired turning speed for robot chassis in radians/sec
-                about the Z axis, counter-clockwise is positive.
-        linear -- desired forward speed for robot chassis in meters/sec
-                along the X axis. forward is positive."""
-        results = list()
+        """Calculate angle and speed of each wheel for desired velocities.
+
+        Args:
+            angular : desired turning speed for robot chassis in radians/sec
+            linear : desired forward speed for robot chassis in meters/sec
+
+        Returns:
+            A list of desired angle and speed for each chassis wheel
+        """
+        calculated_results = []
         for wheel in self.chassis:
-            answer = chassis_wheel_angle_speed(wheel.name, 0, 0)
-            results.append(answer)
+            answer = ChassisWheelAngleSpeed(wheel.name, 0, 0)
+            calculated_results.append(answer)
 
-        return results
-
-
-if __name__ == '__main__':
-    print("Running under Python " + str(sys.version_info[0]))
-    print("This class has no functionality when run directly.")
+        return calculated_results

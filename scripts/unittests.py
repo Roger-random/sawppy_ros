@@ -1,67 +1,127 @@
 #!/usr/bin/python3
-import chassis_wheel_calculator as cwc
-import unittest
+# -*- coding: utf-8 -*-
+
+"""Unit tests for Sawppy logic executed with straight Python (no ROS)."""
+
+import logging
 import math
+import sys
+import unittest
+
+from chassis_wheel_calculator import ChassisWheel, ChassisWheelCalculator
 
 max_angle = 2 * math.pi
 
+sawppy_wheelbase_front = 11.375
+sawppy_wheelbase_mid = 0
+sawppy_wheelbase_rear = -10
+sawppy_track_front = 9.125
+sawppy_track_mid = 10.375
+sawppy_track_rear = 9
+
 
 class TestWheelCalculator(unittest.TestCase):
+    """Tests for wheel calculator class."""
+
     def setUp(self):
-        """Configure test chassis with default Sawppy dimensions"""
-        self.test_chassis = list()
+        """Configure test chassis with default Sawppy dimensions."""
+        self.log = logging.getLogger('TestLog')
+        self.test_chassis = []
 
         self.test_chassis.append(
-            cwc.chassis_wheel('front_left',  11.375,   9.125))
+            ChassisWheel(
+                'front_left',  sawppy_wheelbase_front,  sawppy_track_front,
+                ),
+            )
         self.test_chassis.append(
-            cwc.chassis_wheel('front_right', 11.375,  -9.125))
+            ChassisWheel(
+                'front_right', sawppy_wheelbase_front, -sawppy_track_front,
+                ),
+            )
         self.test_chassis.append(
-            cwc.chassis_wheel('mid_left',         0,  10.375))
+            ChassisWheel(
+                'mid_left',      sawppy_wheelbase_mid,  sawppy_track_mid,
+                ),
+            )
         self.test_chassis.append(
-            cwc.chassis_wheel('mid_right',        0, -10.375))
+            ChassisWheel(
+                'mid_right',     sawppy_wheelbase_mid, -sawppy_track_mid,
+                ),
+            )
         self.test_chassis.append(
-            cwc.chassis_wheel('rear_left',      -10,   9))
+            ChassisWheel(
+                'rear_left',    sawppy_wheelbase_rear,  sawppy_track_rear,
+                ),
+            )
         self.test_chassis.append(
-            cwc.chassis_wheel('rear_right',     -10,  -9))
+            ChassisWheel(
+                'rear_right',   sawppy_wheelbase_rear, -sawppy_track_rear,
+                ),
+            )
 
-        self.calculator = cwc.chassis_wheel_calculator(self.test_chassis)
+        self.calculator = ChassisWheelCalculator(self.test_chassis)
 
-    def well_formed_results(self, results):
-        """Verify calculated results are in expected form"""
+    def well_formed_results(self, calculated_results):
+        """Verify calculated_results are in expected form.
+
+        Args:
+            calculated_results : list of six chassis_wheel_angle_speed.
+        """
         self.assertEqual(
-            len(results), 6,
-            "Six wheels in should have resulted in six wheels out")
+            len(calculated_results),
+            6,
+            'Six wheels in should have resulted in six wheels out',
+            )
 
-        test_names_checklist = list(
-            ['front_left', 'front_right', 'mid_left',
-             'mid_right', 'rear_left', 'rear_right'])
-        test_names_encountered = list()
+        test_names_checklist = [
+            'front_left',
+            'front_right',
+            'mid_left',
+            'mid_right',
+            'rear_left',
+            'rear_right',
+            ]
+        test_names_encountered = []
 
-        for wheel in results:
+        for wheel in calculated_results:
             self.assertIn(
-                wheel.name, test_names_checklist,
-                "Encountered name not on the checklist")
+                wheel.name,
+                test_names_checklist,
+                'Encountered name not on the checklist',
+                )
             test_names_encountered.append(wheel.name)
             test_names_checklist.remove(wheel.name)
             self.assertGreaterEqual(wheel.angle, -max_angle)
             self.assertLessEqual(wheel.angle, max_angle)
 
         self.assertEqual(
-            len(test_names_checklist), 0,
-            "Wheel names were expected but never encountered: {0}".format(
-                test_names_checklist))
+            len(test_names_checklist),
+            0,
+            'Wheel names were expected but never encountered: {0}'.format(
+                test_names_checklist,
+                ),
+            )
         self.assertEqual(
-            len(test_names_encountered), 6,
-            "Less than six names on the checklist was encountered")
+            len(test_names_encountered),
+            6,
+            'Less than six names on the checklist was encountered',
+            )
 
     def test_straight_forward(self):
-        results = self.calculator.calculate(0, 1.0)
+        """Test simple case of rover going straight forward."""
+        calculated_results = self.calculator.calculate(0, 1.0)
 
-        self.well_formed_results(results)
+        self.well_formed_results(calculated_results)
 
-        for wheel in results:
-            print(wheel.name, wheel.angle, wheel.velocity)
+        for wheel in calculated_results:
+            self.log.debug('{0} {1} {2}'.format(
+                wheel.name,
+                wheel.angle,
+                wheel.velocity,
+                ),
+            )
 
 
 if __name__ == '__main__':
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     unittest.main()
