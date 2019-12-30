@@ -114,12 +114,20 @@ class TestWheelCalculator(unittest.TestCase):
         self.well_formed_results(calculated_results)
 
         for wheel in calculated_results:
+            self.assertEqual(
+                wheel.angle,
+                0,
+                'Unexpected angle wheel {0}'.format(wheel.name),
+            )
+            self.assertEqual(
+                wheel.velocity,
+                1.0,
+                'Unexpected velocity wheel {0}'.format(wheel.name),
+            )
             self.log.debug('{0} {1} {2}'.format(
                 wheel.name,
                 wheel.angle,
-                wheel.velocity,
-                ),
-            )
+                wheel.velocity))
 
 
 if __name__ == '__main__':
