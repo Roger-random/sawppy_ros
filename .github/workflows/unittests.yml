@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2.0.0
+    - name: wemake-python-styleguide
+      uses: wemake-services/wemake-python-styleguide@0.13.3
     - name: Plain Python unit tests under scripts
       run: |
         cd $GITHUB_WORKSPACE/scripts/
