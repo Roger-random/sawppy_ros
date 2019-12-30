@@ -12,12 +12,12 @@ from chassis_wheel_calculator import ChassisWheel, ChassisWheelCalculator
 
 max_angle = 2 * math.pi
 
-sawppy_wheelbase_front = 11.375
+sawppy_wheelbase_front = 0.285
 sawppy_wheelbase_mid = 0
-sawppy_wheelbase_rear = -10
-sawppy_track_front = 9.125
-sawppy_track_mid = 10.375
-sawppy_track_rear = 9
+sawppy_wheelbase_rear = -0.257
+sawppy_track_front = 0.23
+sawppy_track_mid = 0.26
+sawppy_track_rear = 0.23
 
 
 class TestWheelCalculator(unittest.TestCase):
