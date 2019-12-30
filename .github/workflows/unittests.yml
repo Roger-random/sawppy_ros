@@ -1,0 +1,12 @@
+name: unittests
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Plain Python unit tests
+      run: python3 scripts/unittests.py
