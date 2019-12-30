@@ -71,7 +71,7 @@ class ChassisWheelCalculator(object):
         """
         calculated_results = []
         for wheel in self.chassis:
-            answer = ChassisWheelAngleSpeed(wheel.name, 0, 0)
+            answer = ChassisWheelAngleSpeed(wheel.name, 0, linear)
             calculated_results.append(answer)
 
         return calculated_results

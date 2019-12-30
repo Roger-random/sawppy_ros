@@ -127,7 +127,9 @@ class TestWheelCalculator(unittest.TestCase):
             self.log.debug('{0} {1} {2}'.format(
                 wheel.name,
                 wheel.angle,
-                wheel.velocity))
+                wheel.velocity,
+                ),
+            )
 
 
 if __name__ == '__main__':
