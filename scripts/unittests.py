@@ -3,6 +3,7 @@
 
 """Unit tests for Sawppy logic executed with straight Python (no ROS)."""
 
+import csv
 import logging
 import math
 import sys
@@ -62,7 +63,7 @@ class TestWheelCalculator(unittest.TestCase):
 
         self.calculator = ChassisWheelCalculator(self.test_chassis)
 
-    def well_formed_results(self, calculated_results):
+    def verify_well_formed_results(self, calculated_results):
         """Verify calculated_results are in expected form.
 
         Args:
@@ -108,29 +109,70 @@ class TestWheelCalculator(unittest.TestCase):
             'Less than six names on the checklist was encountered',
             )
 
-    def test_straight_forward(self):
-        """Test simple case of rover going straight forward."""
-        calculated_results = self.calculator.calculate(0, 1.0)
+    def verify_wheel_angle_velocity(self, wheel, test_case):
+        """Given a ChassisWheelAngleSpeed, compare against test case data.
 
-        self.well_formed_results(calculated_results)
+        Args:
+            wheel : a computed instance of ChassisWheelAnglespeed
+            test_case : a row from the test case CSV file
+        """
+        self.assertAlmostEqual(
+            float(wheel.angle),
+            float(test_case['{0} {1}'.format(wheel.name, 'angle')]),
+            msg='Unexpected angle wheel {0}'.format(wheel.name),
+        )
+        self.assertAlmostEqual(
+            float(wheel.velocity),
+            float(test_case['{0} {1}'.format(wheel.name, 'velocity')]),
+            msg='Unexpected velocity wheel {0}'.format(wheel.name),
+        )
 
-        for wheel in calculated_results:
-            self.assertEqual(
-                wheel.angle,
-                0,
-                'Unexpected angle wheel {0}'.format(wheel.name),
+    def perform_wheel_angle_velocity_calculation(self, test_case):
+        """Compute and verify results specified by given test case.
+
+        Args:
+            test_case : a row from the test case CSV file
+        """
+        angular_velocity = float(test_case['angular'])
+        linear_velocity = float(test_case['linear'])
+
+        with self.subTest(msg='angular={0} linear={1}'.format(
+            angular_velocity,
+            linear_velocity,
+            ),
+        ):
+            calculated_results = self.calculator.calculate(
+                angular_velocity,
+                linear_velocity,
             )
-            self.assertEqual(
-                wheel.velocity,
-                1.0,
-                'Unexpected velocity wheel {0}'.format(wheel.name),
-            )
-            self.log.debug('{0} {1} {2}'.format(
-                wheel.name,
-                wheel.angle,
-                wheel.velocity,
+            self.verify_well_formed_results(calculated_results)
+            for wheel in calculated_results:
+                self.verify_wheel_angle_velocity(wheel, test_case)
+
+    def test_angle_velocity_from_csv(self):
+        """Run through test data stored as comma separated values file."""
+        with open('chassis_wheel_calculator_tests.csv') as csvfile:
+            test_case_reader = csv.DictReader(
+                csvfile,
+                fieldnames=(
+                    'angular',
+                    'linear',
+                    'front_left angle',
+                    'front_left velocity',
+                    'front_right angle',
+                    'front_right velocity',
+                    'mid_left angle',
+                    'mid_left velocity',
+                    'mid_right angle',
+                    'mid_right velocity',
+                    'rear_left angle',
+                    'rear_left velocity',
+                    'rear_right angle',
+                    'rear_right velocity',
                 ),
             )
+            for test_case in test_case_reader:
+                self.perform_wheel_angle_velocity_calculation(test_case)
 
 
 if __name__ == '__main__':
