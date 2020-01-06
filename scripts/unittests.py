@@ -119,11 +119,13 @@ class TestWheelCalculator(unittest.TestCase):
         self.assertAlmostEqual(
             float(wheel.angle),
             float(test_case['{0} {1}'.format(wheel.name, 'angle')]),
+            places=4,
             msg='Unexpected angle wheel {0}'.format(wheel.name),
         )
         self.assertAlmostEqual(
             float(wheel.velocity),
             float(test_case['{0} {1}'.format(wheel.name, 'velocity')]),
+            places=4,
             msg='Unexpected velocity wheel {0}'.format(wheel.name),
         )
 
