@@ -1,4 +1,10 @@
 # ROS software for Sawppy the Rover
+
+## STATUS: Abandoned.
+Rhys Mainwaring, a member of the Sawppy builders community, has stepped up to deliver a [full ROS Melodic software stack](https://github.com/srmainwaring/curio). I see no point in duplicating effort.
+
+----
+
 This repository hosts software for driving [Sawppy the Rover](http://sawppy.com) using ROS ([Robot Operating System](http://ros.org)).
 
 This branch is focused on [ROS Melodic Morenia](http://wiki.ros.org/melodic). Functionality on other ROS distributions are not guaranteed.
